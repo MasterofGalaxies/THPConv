@@ -1,0 +1,18 @@
+targetfile = ../bteppc.txt
+
+include $(targetfile)
+###############################################################################
+# The following defines force the commondef defines to be directory independent
+###############################################################################
+
+componentdir = ./components
+stackdir     = $(componentdir)/stack
+ctrlrdir     = $(componentdir)/ctrlr
+rpcdir       = $(componentdir)/rpc
+gkidir       = $(componentdir)/gki
+
+stackincdir  = $(stackdir)/include
+ctrlrincdir  = $(ctrlrdir)/include
+rpcincdir    = $(rpcdir)/include
+COMMONDIR    = ../common
+incdirs      = -I$(COMMONDIR) -I$(stackincdir) -I$(ctrlrdir) -I$(rpcincdir)

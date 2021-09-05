@@ -1,0 +1,154 @@
+/******************************************************************************
+**
+**   File Name:  hsp2_fsm.h
+**
+** Description:  This file contains definitions used by the HSP State Machine.
+**
+**
+**  Copyright (c) 1999-2004, WIDCOMM Inc., All Rights Reserved.
+**  WIDCOMM Bluetooth Core. Proprietary and confidential.
+**
+******************************************************************************/
+
+#ifndef HSP2_FSM_INT_H
+#define HSP2_FSM_INT_H
+
+#define HSP2_TBL_NUM_STATES       1
+#define HSP2_TBL_NUM_ACTIONS      2
+#define HSP2_TBL_ENTRIES         (HSP2_TBL_NUM_STATES + HSP2_TBL_NUM_ACTIONS)
+#define HSP2_TBL_NEXT_STATE      (0)
+#define HSP2_TBL_FIRST_ACTION    (1)
+#define HSP2_TBL_SECOND_ACTION   (2)
+
+/* The first entry in the table entry is the next state.  
+ * Subsequent entries are actions to perfrom */
+typedef UINT8 tHSP2_FSM_TBL_ENTRY[HSP2_TBL_ENTRIES];
+
+/* Headset Main FSM States */
+enum {
+    HSP2_FSM_OFF_ST,
+    HSP2_FSM_IDLE_ST,
+    HSP2_FSM_INQ_ST,
+    HSP2_FSM_SDP_ST,
+    HSP2_FSM_W4_RFC_ST,
+    HSP2_FSM_RFC_ST,
+    HSP2_FSM_W4_SCO_ST,
+    HSP2_FSM_IB_SCO_ST,
+    HSP2_FSM_OPEN_ST,
+    HSP2_FSM_CLOSE_ST,
+    HSP2_FSM_PARK_ST
+}; typedef UINT8 tHSP2_FSM_STATE;
+
+
+/* Headset Main FSM Events */
+enum {
+    HSP2_FSM_NULL_EVT,
+    HSP2_FSM_REG_EVT,
+    HSP2_FSM_DEREG_EVT,
+    HSP2_FSM_HS_DISCONN_EVT,
+    HSP2_FSM_AG_DISCONN_EVT,
+    HSP2_FSM_EST_CONN_EVT,
+    HSP2_FSM_INQ_EVT,
+    HSP2_FSM_SDP_EVT,
+    HSP2_FSM_RCV_CKPD_EVT,
+    HSP2_FSM_RCV_RING_EVT,
+    HSP2_FSM_INQ_RTRY_EVT,
+    HSP2_FSM_INQ_FAIL_EVT,
+    HSP2_FSM_INQ_SUCC_EVT,
+    HSP2_FSM_SDP_RTRY_EVT,
+    HSP2_FSM_SDP_FAIL_EVT,
+    HSP2_FSM_SDP_SUCC_EVT,
+    HSP2_FSM_AG_RFC_OPN_EVT,
+    HSP2_FSM_HS_RFC_OPN_EVT,
+    HSP2_FSM_RFC_CLOSE_EVT,
+    HSP2_FSM_RFC_RTRY_EVT,
+    HSP2_FSM_RFC_FAIL_EVT,
+    HSP2_FSM_SCO_OPN_EVT,
+    HSP2_FSM_HS_IBSCO_OPN_EVT,
+    HSP2_FSM_AG_IBSCO_OPN_EVT,
+    HSP2_FSM_HS_SCO_CLOSE_EVT,
+    HSP2_FSM_AG_SCO_CLOSE_EVT,
+    HSP2_FSM_SCO_RTRY_EVT,
+    HSP2_FSM_SCO_FAIL_EVT,
+    HSP2_FSM_AUTO_RING_EVT,
+    HSP2_FSM_SND_CMD_EVT,
+    HSP2_FSM_RCV_CMD_EVT,
+    HSP2_FSM_SVR_RFC_CLSE_EVT,
+    HSP2_FSM_UNPARK_EVT,
+    HSP2_FSM_IB_RFC_OPN_EVT,
+    HSP2_FSM_STATE_CLS_EVT,
+    HSP2_FSM_STATE_W4_SCO_EVT,
+    HSP2_FSM_EST_SCO_EVT,
+    HSP2_FSM_REL_SCO_EVT,
+    HSP2_FSM_CLS_SERVICE_EVT,
+    HSP2_FSM_SCO_INITIATED_EVT
+
+#if (HFP_INCLUDED == TRUE)  
+    ,
+    HFP_FSM_RFC_OPEN_EVT,
+    HFP_FSM_AUD_SETUP_EVT,
+    HFP_FSM_AUD_RELEASE_EVT,
+    HFP_FSM_IND_INCALL_EVT,
+    HFP_FSM_STOP_RING_EVT,
+    HFP_FSM_SCO_OPN_EVT,
+    HFP_FSM_SCO_CLOSE_EVT
+
+#endif
+
+}; typedef UINT8 tHSP2_FSM_EVT;
+
+
+/* HSP FSM Actions */
+enum {
+    HSP2_NULL_ACT,
+    HSP2_REGISTER_ACT,
+    HSP2_EST_CONN_ACT,
+    HSP2_REL_CONN_ACT,
+    HSP2_DEREGISTER_ACT,
+    HSP2_PRFM_INQ_ACT,
+    HSP2_RTRY_INQ_ACT,
+    HSP2_ABORT_INQ_ACT,
+    HSP2_SEND_CKPD_ACT,
+    HSP2_SCO_LSTN_ACT,
+    HSP2_CONN_SCO_ACT,
+    HSP2_RING_HS_ACT,
+    HSP2_STOP_RING_ACT,
+    HSP2_PRFM_SDP_ACT,
+    HSP2_ABORT_CONN_ACT,
+    HSP2_SND_AT_ACT,
+    HSP2_RCV_AT_ACT,
+    HSP2_RFC_LSTN_ACT,
+    HSP2_RTRY_SDP_ACT,
+    HSP2_RFC_CONN_ACT,
+    HSP2_ABORT_RFC_ACT,
+    HSP2_ABORT_SCO_ACT,
+    HSP2_REL_RFC_ACT,
+    HSP2_REL_SCO_ACT,
+    HSP2_X_SCO_LSTN_ACT,
+    HSP2_SCO_CLS_CBACK,
+    HSP2_CHK_SND_CKPD_ACT,
+    HSP2_CHK_CKPD_WAIT_ACT,
+    HSP2_CHK_RING_HS_ACT,
+    HSP2_UNPARK_ACT,
+    HSP2_CHK_CLS_ACT,
+    HSP2_CHK_AG_CLS_ACT,
+    HSP2_CHK_HS_CLS_ACT,
+    HSP2_HS_SCO_CLS_ACT,
+    HSP2_PARK_CKPD_ACT,
+    HSP2_AG_EST_SCO_ACT,
+    HSP2_IB_CKPD_ACT,
+    HSP2_IS_CKPD_RCV_ACT,
+    HSP2_IB_RING_ACT
+#if (HFP_INCLUDED == TRUE)
+    ,
+    HSP2_SDP_RESULT_ACT,
+    HFP_AT_INIT_ACT,
+    HFP_POST_SCO_ACT,
+    HFP_SND_CLIP_ACT
+#endif
+
+}; typedef UINT8 tHSP2_FSM_ACTION;
+
+
+#endif /* HSP2_FSM_INT_H */
+

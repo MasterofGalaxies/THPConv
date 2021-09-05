@@ -1,0 +1,21 @@
+MEMORY {
+text : origin = 0xFFF00000
+}
+SECTIONS {
+GROUP:{
+.text :{}
+.init :{}
+extab :{}
+extabindex:{}
+.ctors :{}
+.dtors :{}
+.rodata :{}
+.data :{}
+.bss :{}
+.sdata :{}
+.sbss :{}
+.sdata2 :{}
+.sbss2 :{}
+.stack ALIGN(0x100):{}
+} > text
+}
