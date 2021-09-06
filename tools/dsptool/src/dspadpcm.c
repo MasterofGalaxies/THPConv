@@ -19,7 +19,7 @@
 #include "tbdesign.h"
 #include "endian.h"
 #include "encode.h"
-#include "nxadpcm.h"
+#include "Nxadpcm.h"
 
 
 /*---------------------------------------------------------------------------*
