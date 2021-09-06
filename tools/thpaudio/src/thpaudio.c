@@ -75,16 +75,23 @@
 #include "audiofile.h"
 #include "coef.h"
 
-//-----------------------------------------------------------------------------
-//      for using dsptool.dll
-//-----------------------------------------------------------------------------
-typedef void (*lpFunc3)(s16*, u8*, ADPCMINFO*, u32);
-typedef void (*lpFunc4)(u8*, s16*, ADPCMINFO*, u32);
+void encode
+(
+    s16         *src,   // location of source samples (16bit PCM signed little endian)
+    u8          *dst,   // location of destination buffer
+    ADPCMINFO   *cxt,   // location of adpcm info
+    u32         samples // number of samples to encode         
+);
+#define lpencode encode
 
-lpFunc3 lpencode;
-lpFunc4 lpdecode;
-
-HINSTANCE hDll = NULL;
+void decode
+(
+    u8          *src,       // location of ADPCM buffer in RAM
+    s16         *dst,       // location of destination buffer
+    ADPCMINFO   *cxt,       // location of adpcminfo
+    u32         samples     // samples to desired context
+);
+#define lpdecode decode
 
 //-----------------------------------------------------------------------------
 //      Function
@@ -94,13 +101,11 @@ static s32 WriteFrame(FILE *output, s32 flag);
 static u32 GetFrameSampleSize(THPAudioHandle *handle, u32 frameNum, s32 flag);
 static u32 GetNeedSample(THPAudioHandle *handle, u32 frameNum, s32 flag);
 static s32 GetSamplingData(THPAudioHandle* handle, s16* leftBuffer, s16* rightBuffer, u32 needSample);
-static s32 GetDll(void);
 
 //-----------------------------------------------------------------------------
 //      Variable
 //-----------------------------------------------------------------------------
 static s32 Initialized = 0;
-static s32 DllLoaded = 0;
 
 //-----------------------------------------------------------------------------
 //      THPAudioInit
@@ -115,15 +120,6 @@ s32 THPAudioInit(void)
 {
     if(!Initialized)
     {
-        if(!DllLoaded)
-        {
-            if(GetDll() == FALSE)
-            {
-                return FALSE;
-            }
-            DllLoaded = 1;
-        }
-        
         Initialized = 1;
     }
     
@@ -581,34 +577,6 @@ static u32 GetNeedSample(THPAudioHandle *handle, u32 frameNumber, s32 flag)
     }
     
     return needSample;
-}
-
-//-----------------------------------------------------------------------------
-//      GetDll
-//
-//      dsptool.dllのロードと関数ポインタの設定
-//-----------------------------------------------------------------------------
-static s32 GetDll(void)
-{
-    hDll = LoadLibrary("dsptool.dll");
-    
-    if(hDll)
-    {
-        if(!(lpencode =
-             (lpFunc3)GetProcAddress(hDll,
-                                     "encode")))
-            return FALSE;
-        
-        if(!(lpdecode = 
-             (lpFunc4)GetProcAddress(hDll,
-                                     "decode")))
-            return FALSE;
-        
-        return TRUE;
-    }
-    
-    THPPrintError("\n\nERROR : Can't load [dsptool.dll]!!\n");
-    return FALSE;
 }
 
 //-----------------------------------------------------------------------------

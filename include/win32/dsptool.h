@@ -35,13 +35,6 @@
 #define __DSPTOOL_H__
 
 
-#ifdef MAKE_A_DLL
-#define LINKDLL __declspec(dllexport)
-#else
-#define LINKDLL __declspec(dllimport)
-#endif
-
-
 /*---------------------------------------------------------------------------*
     ADPCM info passed to the caller
  *---------------------------------------------------------------------------*/
@@ -65,16 +58,16 @@ typedef struct
 /*---------------------------------------------------------------------------*
     exported functions
  *---------------------------------------------------------------------------*/
-LINKDLL u32 getBytesForAdpcmBuffer      (u32 samples);
-LINKDLL u32 getBytesForAdpcmSamples     (u32 samples);
-LINKDLL u32 getBytesForPcmBuffer        (u32 samples);
-LINKDLL u32 getBytesForPcmSamples       (u32 samples);
-LINKDLL u32 getNibbleAddress            (u32 samples);
-LINKDLL u32 getNibblesForNSamples       (u32 samples);
-LINKDLL u32 getSampleForAdpcmNibble     (u32 nibble);
-LINKDLL u32 getBytesForAdpcmInfo        (void);
+u32 getBytesForAdpcmBuffer      (u32 samples);
+u32 getBytesForAdpcmSamples     (u32 samples);
+u32 getBytesForPcmBuffer        (u32 samples);
+u32 getBytesForPcmSamples       (u32 samples);
+u32 getNibbleAddress            (u32 samples);
+u32 getNibblesForNSamples       (u32 samples);
+u32 getSampleForAdpcmNibble     (u32 nibble);
+u32 getBytesForAdpcmInfo        (void);
 
-LINKDLL void encode
+void encode
 (
     s16         *src,   // location of source samples (16bit PCM signed little endian)
     u8          *dst,   // location of destination buffer
@@ -82,7 +75,7 @@ LINKDLL void encode
     u32         samples // number of samples to encode         
 );
 
-LINKDLL void decode
+void decode
 (
     u8          *src,   // location of encoded source samples
     s16         *dst,   // location of destination buffer (16 bits / sample)
@@ -90,7 +83,7 @@ LINKDLL void decode
     u32         samples // number of samples to decode         
 );
 
-LINKDLL void getLoopContext
+void getLoopContext
 (
     u8          *src,      // location of ADPCM buffer in RAM
     ADPCMINFO   *cxt,      // location of adpcminfo

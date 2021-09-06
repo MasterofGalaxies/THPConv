@@ -21,17 +21,6 @@
 #include "encode.h"
 #include "nxadpcm.h"
 
-/*---------------------------------------------------------------------------*
-    DLL entry point
- *---------------------------------------------------------------------------*/
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
-                       LPVOID lpReserved
-                                         )
-{
-    return TRUE;
-}
-
 
 /*---------------------------------------------------------------------------*
     return the number of bytes to allocate for PCM buffer to encode to ADPCM 
