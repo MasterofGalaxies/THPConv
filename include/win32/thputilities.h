@@ -48,6 +48,8 @@
 extern "C" {
 #endif
 
+#include <limits.h>
+
 #include <revolution/types.h>
 #include <revolution/thpfile.h>
 #include <win32/thpaudio.h>
@@ -63,7 +65,7 @@ extern "C" {
 //--------------------------------------
 typedef struct
 {
-    char           name[_MAX_PATH];
+    char           name[PATH_MAX];
     unsigned long  fileSize;
     
 } THPFileName;

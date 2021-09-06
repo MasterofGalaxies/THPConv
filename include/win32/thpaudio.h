@@ -46,6 +46,8 @@
 #ifndef __THPAUDIO_H__
 #define __THPAUDIO_H__
 
+#include <limits.h>
+
 #include <revolution/types.h>
 #include <revolution/thpfile.h>
 #include <win32/dsptool.h>
@@ -69,7 +71,7 @@ extern "C" {
 
 typedef struct
 {
-    char  fileName[_MAX_PATH];
+    char  fileName[PATH_MAX];
     FILE* fileHandle;
     u32   frequency;
     u32   channel;
