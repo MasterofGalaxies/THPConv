@@ -61,6 +61,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <byteswap.h>
 
 #include <revolution/types.h>
 #include <revolution/thpfile.h>
@@ -142,56 +143,6 @@ void THPUtyConvertToUnixFmt(char* fmt)
         }
     }
 }
-
-/*---------------------------------------------------------------------------*
-  Name:         THPUtyReverseEndianU16
-
-  Description:  16bit値のEndianを変換する。
-
-  Arguments:    data        Endianを変換する16bitの値
-                
-  Returns:      Endianを変換した値
- *---------------------------------------------------------------------------*/
-u16 THPUtyReverseEndianU16(u16 data)
-{
-#if 1
-    __asm {
-        mov     ax,     data;
-        rol     ax,     8;
-        mov     data,   ax;
-    }
-    return data;
-#else
-    return (u16)(((data & 0x00FF) << 8) | ((data & 0xFF00) >> 8));
-#endif
-}
-
-/*---------------------------------------------------------------------------*
-  Name:         THPUtyReverseEndianU32
-
-  Description:  32bit値のEndianを変換する。
-
-  Arguments:    data        Endianを変換する32bitの値
-                
-  Returns:      Endianを変換した値
- *---------------------------------------------------------------------------*/
-u32 THPUtyReverseEndianU32(u32 data)
-{
-#if 1
-    __asm {
-        mov     eax,    data;
-        bswap   eax;
-        mov     data,   eax;
-    }
-    return data;
-    
-#else
-    return(((data >> 24) & 0x000000ff) |
-           ((data >> 8)  & 0x0000ff00) |
-           ((data << 8)  & 0x00ff0000) |
-           ((data << 24) & 0xff000000) );
-#endif
-} 
 
 /*---------------------------------------------------------------------------*
   Name:         THPUtyReverseEndianF32
@@ -701,17 +652,17 @@ s32 THPUtyReadTHPHeader(FILE *ip, THPHeader *header)
     }
     
     // Reverse Endian
-    header->version               = THPUtyReverseEndianU32(header->version);
-    header->bufSize               = THPUtyReverseEndianU32(header->bufSize);
-    header->audioMaxSamples       = THPUtyReverseEndianU32(header->audioMaxSamples);
+    header->version               = bswap_32(header->version);
+    header->bufSize               = bswap_32(header->bufSize);
+    header->audioMaxSamples       = bswap_32(header->audioMaxSamples);
     header->frameRate             = THPUtyReverseEndianF32(header->frameRate);
-    header->numFrames             = THPUtyReverseEndianU32(header->numFrames);
-    header->firstFrameSize        = THPUtyReverseEndianU32(header->firstFrameSize);
-    header->movieDataSize         = THPUtyReverseEndianU32(header->movieDataSize);
-    header->compInfoDataOffsets   = THPUtyReverseEndianU32(header->compInfoDataOffsets);
-    header->offsetDataOffsets     = THPUtyReverseEndianU32(header->offsetDataOffsets);
-    header->movieDataOffsets      = THPUtyReverseEndianU32(header->movieDataOffsets);
-    header->finalFrameDataOffsets = THPUtyReverseEndianU32(header->finalFrameDataOffsets);
+    header->numFrames             = bswap_32(header->numFrames);
+    header->firstFrameSize        = bswap_32(header->firstFrameSize);
+    header->movieDataSize         = bswap_32(header->movieDataSize);
+    header->compInfoDataOffsets   = bswap_32(header->compInfoDataOffsets);
+    header->offsetDataOffsets     = bswap_32(header->offsetDataOffsets);
+    header->movieDataOffsets      = bswap_32(header->movieDataOffsets);
+    header->finalFrameDataOffsets = bswap_32(header->finalFrameDataOffsets);
     
     return THP_ERROR_NOERROR;
 }
@@ -740,7 +691,7 @@ s32 THPUtyReadTHPFrameCompInfo(FILE *ip, THPFrameCompInfo *compinfo)
     }
     
     // Reverse Endian
-    compinfo->numComponents = THPUtyReverseEndianU32(compinfo->numComponents);
+    compinfo->numComponents = bswap_32(compinfo->numComponents);
     
     return THP_ERROR_NOERROR;
 }
@@ -769,9 +720,9 @@ s32 THPUtyReadTHPVideoInfo(FILE *ip, THPVideoInfo *videoinfo)
     }
     
     // Reverse Endian
-    videoinfo->xSize     = THPUtyReverseEndianU32(videoinfo->xSize);
-    videoinfo->ySize     = THPUtyReverseEndianU32(videoinfo->ySize);
-    videoinfo->videoType = THPUtyReverseEndianU32(videoinfo->videoType);
+    videoinfo->xSize     = bswap_32(videoinfo->xSize);
+    videoinfo->ySize     = bswap_32(videoinfo->ySize);
+    videoinfo->videoType = bswap_32(videoinfo->videoType);
     
     return THP_ERROR_NOERROR;
 }
@@ -801,8 +752,8 @@ s32 THPUtyReadTHPVideoInfoOld(FILE *ip, THPVideoInfo *videoinfo)
     }
     
     // Reverse Endian
-    videoinfo->xSize     = THPUtyReverseEndianU32(videoinfoOld.xSize);
-    videoinfo->ySize     = THPUtyReverseEndianU32(videoinfoOld.ySize);
+    videoinfo->xSize     = bswap_32(videoinfoOld.xSize);
+    videoinfo->ySize     = bswap_32(videoinfoOld.ySize);
     videoinfo->videoType = THP_VIDEO_NON_INTERLACE;
     
     return THP_ERROR_NOERROR;
@@ -832,10 +783,10 @@ s32 THPUtyReadTHPAudioInfo(FILE *ip, THPAudioInfo *audioinfo)
     }
     
     // Reverse Endian
-    audioinfo->sndChannels   = THPUtyReverseEndianU32(audioinfo->sndChannels);
-    audioinfo->sndFrequency  = THPUtyReverseEndianU32(audioinfo->sndFrequency);
-    audioinfo->sndNumSamples = THPUtyReverseEndianU32(audioinfo->sndNumSamples);
-    audioinfo->sndNumTracks  = THPUtyReverseEndianU32(audioinfo->sndNumTracks);
+    audioinfo->sndChannels   = bswap_32(audioinfo->sndChannels);
+    audioinfo->sndFrequency  = bswap_32(audioinfo->sndFrequency);
+    audioinfo->sndNumSamples = bswap_32(audioinfo->sndNumSamples);
+    audioinfo->sndNumTracks  = bswap_32(audioinfo->sndNumTracks);
     
     return THP_ERROR_NOERROR;
 }
@@ -865,9 +816,9 @@ s32 THPUtyReadTHPAudioInfoOld(FILE *ip, THPAudioInfo *audioinfo)
     }
     
     // Reverse Endian
-    audioinfo->sndChannels   = THPUtyReverseEndianU32(audioinfoOld.sndChannels);
-    audioinfo->sndFrequency  = THPUtyReverseEndianU32(audioinfoOld.sndFrequency);
-    audioinfo->sndNumSamples = THPUtyReverseEndianU32(audioinfoOld.sndNumSamples);
+    audioinfo->sndChannels   = bswap_32(audioinfoOld.sndChannels);
+    audioinfo->sndFrequency  = bswap_32(audioinfoOld.sndFrequency);
+    audioinfo->sndNumSamples = bswap_32(audioinfoOld.sndNumSamples);
     audioinfo->sndNumTracks  = 1;
     
     return THP_ERROR_NOERROR;
@@ -900,13 +851,13 @@ s32 THPUtyReadTHPFrameHeader(FILE* ip, THPFrameHeader* frameHeader, s32 componen
     }
     
     // Reverse Endian
-    frameHeader->frameSizeNext     = THPUtyReverseEndianU32(frameHeader->frameSizeNext);
-    frameHeader->frameSizePrevious = THPUtyReverseEndianU32(frameHeader->frameSizePrevious);
+    frameHeader->frameSizeNext     = bswap_32(frameHeader->frameSizeNext);
+    frameHeader->frameSizePrevious = bswap_32(frameHeader->frameSizePrevious);
     {
         s32  i;
         for (i = 0; i < componentNum; i++)
         {
-            frameHeader->comp[i] = THPUtyReverseEndianU32(frameHeader->comp[i]);
+            frameHeader->comp[i] = bswap_32(frameHeader->comp[i]);
         }
     }
     
@@ -1504,9 +1455,9 @@ s32 THPUtyCreateTHP(FILE* op, s32              fileFlag,
         for (i = 1; i < NumFrames; i++)
         {
             frameOffsetData[i]
-                = THPUtyReverseEndianU32(frameOffsetData[i] - frameOffsetData[0]);
+                = bswap_32(frameOffsetData[i] - frameOffsetData[0]);
         }
-        frameOffsetData[NumFrames] = THPUtyReverseEndianU32(movieDataSize);
+        frameOffsetData[NumFrames] = bswap_32(movieDataSize);
         
         // Update THPFrameOffsetData
         rtn = fseek(op, fileHeader->header.offsetDataOffsets, SEEK_SET);
@@ -1932,14 +1883,14 @@ s32 THPUtyCopyTHPFile(FILE* ip, THPFileHeader* fileHeader, FILE* op)
             frame_size   = sizeof(u32) * (2 + fileHeader->frameCompInfo.numComponents);
             for (jj = 0; jj < fileHeader->frameCompInfo.numComponents; jj++)
             {
-                frame_size += THPUtyReverseEndianU32(frame_header->comp[jj]);
+                frame_size += bswap_32(frame_header->comp[jj]);
             }
 
             // 次フレームのサイズを取得
-            old_size = THPUtyReverseEndianU32(frame_header->frameSizeNext);
+            old_size = bswap_32(frame_header->frameSizeNext);
 
             // フレームヘッダーの更新 (1) - frameSizePrevious
-            frame_header->frameSizePrevious = THPUtyReverseEndianU32(prev_size);
+            frame_header->frameSizePrevious = bswap_32(prev_size);
             
             // フレームデータの書き込み
             rtn = fwrite(tmp_buffer,  frame_size, 1, op);
@@ -2091,9 +2042,9 @@ s32 THPUtyCopyTHPFile(FILE* ip, THPFileHeader* fileHeader, FILE* op)
             for (ii = 1; ii < num_frames; ii++)
             {
                 frame_offsets[ii]
-                    = THPUtyReverseEndianU32(frame_offsets[ii] - frame_offsets[0]);
+                    = bswap_32(frame_offsets[ii] - frame_offsets[0]);
             }
-            frame_offsets[num_frames] = THPUtyReverseEndianU32(total_size);
+            frame_offsets[num_frames] = bswap_32(total_size);
             
             rtn = fseek(op, fileHeader->header.offsetDataOffsets, SEEK_SET);
             if (rtn != 0)

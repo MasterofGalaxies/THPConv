@@ -65,6 +65,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <byteswap.h>
 
 #include <revolution/types.h>
 #include <win32/thpcore.h>
@@ -349,17 +350,17 @@ s32 THPAudioWriteFrame(THPAudioHandle *handle, FILE *output, s32 flag)
         
         if(flag)
         {
-            handle->recordHeader.sampleSize =THPUtyReverseEndianU32(needSample);
+            handle->recordHeader.sampleSize =bswap_32(needSample);
         }
         else
         {
-            handle->recordHeader.sampleSize = THPUtyReverseEndianU32(needSample14);
+            handle->recordHeader.sampleSize = bswap_32(needSample14);
         }
         
         if(handle->currentFrameNumber)
         {
-            handle->recordHeader.lYn1 = THPUtyReverseEndianU16(*(handle->leftDecodedPtr - 1));
-            handle->recordHeader.lYn2 = THPUtyReverseEndianU16(*(handle->leftDecodedPtr - 2));
+            handle->recordHeader.lYn1 = bswap_16(*(handle->leftDecodedPtr - 1));
+            handle->recordHeader.lYn2 = bswap_16(*(handle->leftDecodedPtr - 2));
         }
         else
         {
@@ -373,8 +374,8 @@ s32 THPAudioWriteFrame(THPAudioHandle *handle, FILE *output, s32 flag)
         {
             if(handle->currentFrameNumber)
             {
-                handle->recordHeader.rYn1 = THPUtyReverseEndianU16(*(handle->rightDecodedPtr - 1));
-                handle->recordHeader.rYn2 = THPUtyReverseEndianU16(*(handle->rightDecodedPtr - 2));
+                handle->recordHeader.rYn1 = bswap_16(*(handle->rightDecodedPtr - 1));
+                handle->recordHeader.rYn2 = bswap_16(*(handle->rightDecodedPtr - 2));
             }
             else
             {
@@ -382,7 +383,7 @@ s32 THPAudioWriteFrame(THPAudioHandle *handle, FILE *output, s32 flag)
                 handle->recordHeader.rYn2 = 0;
             }
             
-            handle->recordHeader.offsetNextChannel = THPUtyReverseEndianU32(adpcmSize);
+            handle->recordHeader.offsetNextChannel = bswap_32(adpcmSize);
             
             handle->rightDecodedPtr = handle->rightDecodedPtr + needSample14;
         }
@@ -485,22 +486,22 @@ static s32 PrepareEncodedData(THPAudioHandle *handle)
         handle->leftDecodedPtr = handle->leftDecodedBuffer;
     }
     
-    handle->recordHeader.lCoef[0]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[0]);
-    handle->recordHeader.lCoef[1]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[1]);
-    handle->recordHeader.lCoef[2]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[2]);
-    handle->recordHeader.lCoef[3]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[3]);
-    handle->recordHeader.lCoef[4]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[4]);
-    handle->recordHeader.lCoef[5]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[5]);
-    handle->recordHeader.lCoef[6]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[6]);
-    handle->recordHeader.lCoef[7]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[7]);
-    handle->recordHeader.lCoef[8]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[8]);
-    handle->recordHeader.lCoef[9]  = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[9]);
-    handle->recordHeader.lCoef[10] = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[10]);
-    handle->recordHeader.lCoef[11] = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[11]);
-    handle->recordHeader.lCoef[12] = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[12]);
-    handle->recordHeader.lCoef[13] = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[13]);
-    handle->recordHeader.lCoef[14] = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[14]);
-    handle->recordHeader.lCoef[15] = THPUtyReverseEndianU16(handle->leftADPCMInfo.coef[15]);
+    handle->recordHeader.lCoef[0]  = bswap_16(handle->leftADPCMInfo.coef[0]);
+    handle->recordHeader.lCoef[1]  = bswap_16(handle->leftADPCMInfo.coef[1]);
+    handle->recordHeader.lCoef[2]  = bswap_16(handle->leftADPCMInfo.coef[2]);
+    handle->recordHeader.lCoef[3]  = bswap_16(handle->leftADPCMInfo.coef[3]);
+    handle->recordHeader.lCoef[4]  = bswap_16(handle->leftADPCMInfo.coef[4]);
+    handle->recordHeader.lCoef[5]  = bswap_16(handle->leftADPCMInfo.coef[5]);
+    handle->recordHeader.lCoef[6]  = bswap_16(handle->leftADPCMInfo.coef[6]);
+    handle->recordHeader.lCoef[7]  = bswap_16(handle->leftADPCMInfo.coef[7]);
+    handle->recordHeader.lCoef[8]  = bswap_16(handle->leftADPCMInfo.coef[8]);
+    handle->recordHeader.lCoef[9]  = bswap_16(handle->leftADPCMInfo.coef[9]);
+    handle->recordHeader.lCoef[10] = bswap_16(handle->leftADPCMInfo.coef[10]);
+    handle->recordHeader.lCoef[11] = bswap_16(handle->leftADPCMInfo.coef[11]);
+    handle->recordHeader.lCoef[12] = bswap_16(handle->leftADPCMInfo.coef[12]);
+    handle->recordHeader.lCoef[13] = bswap_16(handle->leftADPCMInfo.coef[13]);
+    handle->recordHeader.lCoef[14] = bswap_16(handle->leftADPCMInfo.coef[14]);
+    handle->recordHeader.lCoef[15] = bswap_16(handle->leftADPCMInfo.coef[15]);
     
     if(handle->audioInfo.channel == 2)
     {
@@ -525,22 +526,22 @@ static s32 PrepareEncodedData(THPAudioHandle *handle)
             handle->rightDecodedPtr = handle->rightDecodedBuffer;
         }
         
-        handle->recordHeader.rCoef[0]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[0]);
-        handle->recordHeader.rCoef[1]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[1]);
-        handle->recordHeader.rCoef[2]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[2]);
-        handle->recordHeader.rCoef[3]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[3]);
-        handle->recordHeader.rCoef[4]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[4]);
-        handle->recordHeader.rCoef[5]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[5]);
-        handle->recordHeader.rCoef[6]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[6]);
-        handle->recordHeader.rCoef[7]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[7]);
-        handle->recordHeader.rCoef[8]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[8]);
-        handle->recordHeader.rCoef[9]  = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[9]);
-        handle->recordHeader.rCoef[10] = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[10]);
-        handle->recordHeader.rCoef[11] = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[11]);
-        handle->recordHeader.rCoef[12] = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[12]);
-        handle->recordHeader.rCoef[13] = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[13]);
-        handle->recordHeader.rCoef[14] = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[14]);
-        handle->recordHeader.rCoef[15] = THPUtyReverseEndianU16(handle->rightADPCMInfo.coef[15]);
+        handle->recordHeader.rCoef[0]  = bswap_16(handle->rightADPCMInfo.coef[0]);
+        handle->recordHeader.rCoef[1]  = bswap_16(handle->rightADPCMInfo.coef[1]);
+        handle->recordHeader.rCoef[2]  = bswap_16(handle->rightADPCMInfo.coef[2]);
+        handle->recordHeader.rCoef[3]  = bswap_16(handle->rightADPCMInfo.coef[3]);
+        handle->recordHeader.rCoef[4]  = bswap_16(handle->rightADPCMInfo.coef[4]);
+        handle->recordHeader.rCoef[5]  = bswap_16(handle->rightADPCMInfo.coef[5]);
+        handle->recordHeader.rCoef[6]  = bswap_16(handle->rightADPCMInfo.coef[6]);
+        handle->recordHeader.rCoef[7]  = bswap_16(handle->rightADPCMInfo.coef[7]);
+        handle->recordHeader.rCoef[8]  = bswap_16(handle->rightADPCMInfo.coef[8]);
+        handle->recordHeader.rCoef[9]  = bswap_16(handle->rightADPCMInfo.coef[9]);
+        handle->recordHeader.rCoef[10] = bswap_16(handle->rightADPCMInfo.coef[10]);
+        handle->recordHeader.rCoef[11] = bswap_16(handle->rightADPCMInfo.coef[11]);
+        handle->recordHeader.rCoef[12] = bswap_16(handle->rightADPCMInfo.coef[12]);
+        handle->recordHeader.rCoef[13] = bswap_16(handle->rightADPCMInfo.coef[13]);
+        handle->recordHeader.rCoef[14] = bswap_16(handle->rightADPCMInfo.coef[14]);
+        handle->recordHeader.rCoef[15] = bswap_16(handle->rightADPCMInfo.coef[15]);
     }
     
     return TRUE;
