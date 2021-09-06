@@ -96,6 +96,7 @@
 #include <sys/stat.h>
 #include <assert.h>
 #include <string.h>
+#include <limits.h>
 
 #include <revolution/types.h>
 #include <revolution/thpfile.h>
@@ -309,8 +310,8 @@ static u32 getFileNameList(const char *sWildcardPattern, THPFileName* filename)
         u32   i; 
         char  drive[_MAX_DRIVE];
         char  dir[_MAX_DIR];
-        char  pathCopy[_MAX_PATH];
-        char  path[_MAX_PATH];
+        char  pathCopy[PATH_MAX];
+        char  path[PATH_MAX];
         
         qsort(filename, f_count, sizeof(THPFileName), compare);
             
@@ -1085,7 +1086,7 @@ static s32 changeAudioTrack(THPFileHeader* fileHeader)
     s32              error = TRUE;
     u32              cnt;
     //u32              adjustFrequency;
-    char             tmpFilename[_MAX_PATH];
+    char             tmpFilename[PATH_MAX];
     char*            fileName = NULL;
     FILE*            outTHPFp = NULL;
     FILE*            inTHPFp = NULL; 
@@ -1325,7 +1326,7 @@ static s32 appendAudioData(THPFileHeader* fileHeader)
     s32              rtn;
     s32              error = TRUE;
     u32              cnt;
-    char             tmpFilename[_MAX_PATH];
+    char             tmpFilename[PATH_MAX];
     char*            fileName = NULL;
     FILE*            outTHPFp = NULL;
     FILE*            inTHPFp = NULL;
