@@ -20,7 +20,7 @@
  *--------------------------------------------------------------------------*/
 
 #include "types.h"
-#include "nxadpcm.h"
+#include "Nxadpcm.h"
 #include "endian.h"
 #include "dspadpcm.h"
 
