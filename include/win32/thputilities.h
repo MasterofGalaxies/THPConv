@@ -76,8 +76,6 @@ typedef struct
 
 void THPUtyConvertToUnixFmt( char* fmt );
     
-u16  THPUtyReverseEndianU16( u16   data );
-u32  THPUtyReverseEndianU32( u32   data );
 f32  THPUtyReverseEndianF32( f32   data );
     
 s32  THPUtyWritePad32      ( FILE* op, u32 bytes );
