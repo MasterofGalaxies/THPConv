@@ -98,7 +98,6 @@ void decode
 //      Function
 //-----------------------------------------------------------------------------
 static s32 PrepareEncodedData(THPAudioHandle *handle);
-static s32 WriteFrame(FILE *output, s32 flag);
 static u32 GetFrameSampleSize(THPAudioHandle *handle, u32 frameNum, s32 flag);
 static u32 GetNeedSample(THPAudioHandle *handle, u32 frameNum, s32 flag);
 static s32 GetSamplingData(THPAudioHandle* handle, s16* leftBuffer, s16* rightBuffer, u32 needSample);
