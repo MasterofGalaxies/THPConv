@@ -2126,7 +2126,7 @@ static s32 THPUtyWriteVideoOneFrame(FILE* thpFp, THPFileName*    fileName,
         goto ERROR_END;
     }
     
-    jpegFp = fopen(fileName->name, "rb");
+    jpegFp = fopen(fileName->name, "r");
     if (jpegFp == NULL)
     {
         THPPrintError("\aERROR : Can't open [%s] file (%ld)\n", fileName->name, __LINE__);
