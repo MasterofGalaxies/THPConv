@@ -1011,7 +1011,7 @@ static s32 convertJPEGtoTHP(void)
     }
     
     // Open Output File
-    thpFp = fopen(outFile, "wb");
+    thpFp = fopen(outFile, "w");
     if (thpFp == NULL)
     {
         THPPrintError("\aERROR : Can't output [%s].\n", outFile);
@@ -1189,7 +1189,7 @@ static s32 changeAudioTrack(THPFileHeader* fileHeader)
     }
     
     // 入力 THP ファイルのオープン
-    inTHPFp = fopen(inFile, "rb");
+    inTHPFp = fopen(inFile, "r");
     if (inTHPFp == NULL)
     {
         printf("\aERROR : Can't open [%s].\n", inFile);
@@ -1224,7 +1224,7 @@ static s32 changeAudioTrack(THPFileHeader* fileHeader)
         fileName = tmpFilename;
     }
     
-    outTHPFp = fopen(fileName, "w+b");
+    outTHPFp = fopen(fileName, "w+");
     if (outTHPFp == NULL)
     {
         printf("\aERROR : Can't open [%s].\n", fileName);
@@ -1336,7 +1336,7 @@ static s32 appendAudioData(THPFileHeader* fileHeader)
     THPAudioHandle** audioHandle = NULL;
     
     // 入力 THP ファイルのオープン
-    inTHPFp = fopen(inFile, "rb");
+    inTHPFp = fopen(inFile, "r");
     if (inTHPFp == NULL)
     {
         printf("\aERROR : Can't open [%s].\n", inFile);
@@ -1371,7 +1371,7 @@ static s32 appendAudioData(THPFileHeader* fileHeader)
         fileName = tmpFilename;
     }
     
-    outTHPFp = fopen(fileName, "wb");
+    outTHPFp = fopen(fileName, "w");
     if (outTHPFp == NULL)
     {
         printf("\aERROR : Can't open [%s].\n", fileName);
@@ -1580,7 +1580,7 @@ static s32 changeAudioData(void)
     }
 
     // 入力 THP ファイルのオープン
-    inTHPFp = fopen(inFile, "rb");
+    inTHPFp = fopen(inFile, "r");
     if (inTHPFp == NULL)
     {
         printf("\aERROR : Can't open [%s].\n", inFile);

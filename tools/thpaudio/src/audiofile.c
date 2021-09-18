@@ -52,7 +52,7 @@
 s32 __THPAudioOpenFile(char *fileName, THPAudioFileInfo *fileInfo)
 {
     
-    if( (fileInfo->fileHandle = fopen(fileName, "rb")) == NULL )
+    if( (fileInfo->fileHandle = fopen(fileName, "r")) == NULL )
     {
         THPPrintError("Can't open [%s]\n", fileName);
         return FALSE;
@@ -136,7 +136,7 @@ s32 __THPAudioOpenFile(char *fileName, THPAudioFileInfo *fileInfo)
 
 s32 __THPAudioCreateFile(char *fileName, THPAudioFileInfo *fileInfo)
 {
-    if( (fileInfo->fileHandle = fopen(fileName, "wb")) == NULL )
+    if( (fileInfo->fileHandle = fopen(fileName, "w")) == NULL )
     {
         THPPrintError("Can't create %s\n", fileName);
         return FALSE;

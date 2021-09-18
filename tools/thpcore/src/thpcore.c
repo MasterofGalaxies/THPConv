@@ -546,7 +546,7 @@ s32 THPCONVGetVideoData(char* inFileName , THPVideoInfo *header)
     u32             THPError = 0;
     FILE*       ip;
     
-    ip = fopen (inFileName, "rb"); 
+    ip = fopen (inFileName, "r"); 
     if ( ip == NULL)
     {
         THPPrintError("Unable to open file %s\n", inFileName);
