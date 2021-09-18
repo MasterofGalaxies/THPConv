@@ -88,8 +88,6 @@
   
  *---------------------------------------------------------------------------*/
 
-#include <windows.h>
-#include <CRTDBG.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -97,6 +95,9 @@
 #include <assert.h>
 #include <string.h>
 #include <limits.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <glob.h>
 
 #include <revolution/types.h>
 #include <revolution/thpfile.h>
@@ -281,49 +282,35 @@ static s32 verifyWriteOverInputData(const char* fileName)
  *---------------------------------------------------------------------------*/
 static u32 getFileNameList(const char *sWildcardPattern, THPFileName* filename)
 {
-    u32              f_count = 0;
-    WIN32_FIND_DATA  wfd;
-    HANDLE           hFind;
-    struct           stat;
+    u32              f_count;
+    glob_t           files;
     
-    if ((hFind = FindFirstFile(sWildcardPattern, &wfd)) == INVALID_HANDLE_VALUE)
+    if (glob(sWildcardPattern, 0, NULL, &files))
     {
-        return f_count;
+        return 0;
     }
     
-    do
-    {   
-        if (filename != NULL)
+    if (filename)
+    {
+        for (f_count = 0; f_count < files.gl_pathc; ++f_count)
         {
-            strcpy(filename[f_count].name, wfd.cFileName);
-            strlwr(filename[f_count].name);
-            filename[f_count].fileSize = wfd.nFileSizeLow;
+            strcpy(filename[f_count].name, files.gl_pathv[f_count]);
+            
+            struct stat file;
+            stat(files.gl_pathv[f_count], &file);
+            filename[f_count].fileSize = file.st_size;
         }
-        f_count++;
-        
-    } while (FindNextFile(hFind, &wfd));
+    }
+    else
+    {
+        f_count = files.gl_pathc;
+    }
     
-    FindClose(hFind);
+    globfree(&files);
     
     if (filename != NULL)
     {
-        u32   i; 
-        char  drive[_MAX_DRIVE];
-        char  dir[_MAX_DIR];
-        char  pathCopy[PATH_MAX];
-        char  path[PATH_MAX];
-        
         qsort(filename, f_count, sizeof(THPFileName), compare);
-            
-        _splitpath(sWildcardPattern, drive, dir, NULL, NULL);
-        _makepath(path, drive, dir, NULL, NULL);
-        
-        for (i = 0; i < f_count; i++)
-        {
-            strcpy(pathCopy, path);
-            strcat(pathCopy, filename[i].name);
-            strcpy(filename[i].name, pathCopy);
-        }
     }
     
     return f_count++;
@@ -854,15 +841,18 @@ static s32 convertJPEGtoTHP(void)
         for (cnt = 0; cnt < num_JPGfiles; cnt++)
         {
             struct stat  statBuf;
-            char         ext[_MAX_EXT];
+            char         *ext;
+            size_t       nameLen;
 
             // JPEG ファイル名保存
             strcpy(jpegFileList[cnt].name, jpegFilesPtr[cnt]);
             THPUtyConvertToUnixFmt(jpegFileList[cnt].name);
             
             // 拡張子の確認
-            _splitpath(jpegFileList[cnt].name, NULL, NULL, NULL, ext);
-            if ((stricmp(ext, ".jpg") != 0) && (stricmp(ext, ".jpeg") != 0))
+            nameLen = strlen(jpegFileList[cnt].name);
+            ext = jpegFileList[cnt].name + nameLen;
+            if ((nameLen < 4 || strcasecmp(ext - 4, ".jpg")) &&
+                (nameLen < 5 || strcasecmp(ext - 5, ".jpeg")))
             {
                 printf("\aERROR : Please input filename is [***.jpg] or [***.jpeg].\n");
                 error = FALSE;
@@ -1214,10 +1204,23 @@ static s32 changeAudioTrack(THPFileHeader* fileHeader)
     }
     else
     {
-        char drive[_MAX_DRIVE];
-        char dir[_MAX_DIR];
-        _splitpath(inFile, drive, dir, NULL, NULL);
-        _makepath(tmpFilename, drive, dir, TMP_FILENAME, NULL);
+        size_t pathlen;
+        char *lastslash = strrchr(inFile, '/');
+        if (lastslash)
+        {
+            pathlen = lastslash - inFile + 1;
+            memcpy(tmpFilename, inFile, pathlen);
+        }
+        else
+        {
+            getcwd(tmpFilename, PATH_MAX);
+            pathlen = strlen(tmpFilename);
+            tmpFilename[pathlen] = '/';
+            ++pathlen;
+        }
+        
+        strncpy(tmpFilename + pathlen, TMP_FILENAME, PATH_MAX - pathlen);
+        
         fileName = tmpFilename;
     }
     
@@ -1348,10 +1351,23 @@ static s32 appendAudioData(THPFileHeader* fileHeader)
     }
     else
     {
-        char drive[_MAX_DRIVE];
-        char dir[_MAX_DIR];
-        _splitpath(inFile, drive, dir, NULL, NULL);
-        _makepath(tmpFilename, drive, dir, TMP_FILENAME, NULL);
+        size_t pathlen;
+        char *lastslash = strrchr(inFile, '/');
+        if (lastslash)
+        {
+            pathlen = lastslash - inFile + 1;
+            memcpy(tmpFilename, inFile, pathlen);
+        }
+        else
+        {
+            getcwd(tmpFilename, PATH_MAX);
+            pathlen = strlen(tmpFilename);
+            tmpFilename[pathlen] = '/';
+            ++pathlen;
+        }
+        
+        strncpy(tmpFilename + pathlen, TMP_FILENAME, PATH_MAX - pathlen);
+        
         fileName = tmpFilename;
     }
     

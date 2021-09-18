@@ -13,7 +13,6 @@
   $Log: not supported by cvs2svn $
   
  *---------------------------------------------------------------------------*/
-#include <windows.h>
 #include "types.h"
 #include "dspadpcm.h"
 #include "tbdesign.h"
@@ -73,7 +72,7 @@ u32 getBytesForAdpcmSamples(u32 samples)
 
     if (samplesLeft)
     {
-        ULONG additionalBytes;
+        unsigned long additionalBytes;
 
         additionalBytes = 1;                // 1 byte frame header
         additionalBytes += samplesLeft / 2; // number of even bytes

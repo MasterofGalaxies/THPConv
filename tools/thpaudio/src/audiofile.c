@@ -73,10 +73,9 @@ s32 __THPAudioOpenFile(char *fileName, THPAudioFileInfo *fileInfo)
     }
     else
     {
-        char    ext[_MAX_EXT];
-        
-        _splitpath(fileName, NULL, NULL, NULL, ext);
-        if(stricmp(".wav", ext) == 0){
+        size_t extOffset = strlen(fileName);
+
+        if(extOffset >= 4 && strcasecmp(fileName + extOffset - 4, ".wav") == 0){
             fileInfo->type = WAVE_FILE;
         } else {
             THPPrintError("ERROR : This file name is Not [*.wav].\n");
