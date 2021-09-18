@@ -89,62 +89,6 @@ static s32 THPUtyCopyVideoFrame    ( FILE* thpFp, FILE*            videoTHPFp,
  *---------------------------------------------------------------------------*
  *---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*
-  Name:         THPUtyConvertToUnixFmt
-
-  Description:  fmtで指定されたUnix形式のパスをDOS形式に変換する。
-                fmtで指定したバッファを上書きする点に注意。
-                
-  Arguments:    fmt         変換する文字列のポインタ
-                
-  Returns:      無し
- *---------------------------------------------------------------------------*/
-void THPUtyConvertToUnixFmt(char* fmt)
-{
-    char*  fmt_start = fmt;
-    char   temp[256];
-    char*  temp_ptr = temp;
-    
-    strcpy(temp_ptr, fmt); 
-    
-    if (temp_ptr == NULL)
-    {
-        return;
-    }
-    
-    while (*temp_ptr != '\0')
-    {
-        if ((*temp_ptr == '/') && (*(temp_ptr + 1) == '/'))
-        {
-            *fmt       = *(temp_ptr + 2);
-            *(fmt + 1) = ':';
-            *(fmt + 2) = '\\';
-            fmt += 3;
-            temp_ptr += 3;
-        }
-        else if ((*temp_ptr == '.') && (*(temp_ptr + 1) == '.') && (*(temp_ptr + 2) == '/'))
-        {
-            *fmt       = '.';
-            *(fmt + 1) = '.';
-            *(fmt + 2) = '\\';
-            fmt += 3;
-            temp_ptr += 3;
-        }
-        else if (*temp_ptr == '/')
-        {
-            *(fmt) = '\\';
-            fmt++;
-            temp_ptr++;
-        }
-        else
-        {
-            *fmt = *temp_ptr;
-            fmt++;
-            temp_ptr++;
-        }
-    }
-}
-
-/*---------------------------------------------------------------------------*
   Name:         THPUtyReverseEndianF32
 
   Description:  32bit float値のEndianを変換する。

@@ -111,7 +111,6 @@
 //
 // #include <win32/thputilities.h>
 //
-//    THPUtyConvertToUnixFmt()
 //    THPUtyHeaderInit()
 //    THPUtyCreateTHP()
 //    THPUtyChangeAudioTrack()
@@ -494,7 +493,6 @@ static s32 checkArguments(u32 argument_count, char *argv[])
 
                 // 入力 THP ファイル名取得
                 inFile = argv[i];
-                THPUtyConvertToUnixFmt(inFile);
                 
                 change_snd_data = 1;
             }
@@ -521,7 +519,6 @@ static s32 checkArguments(u32 argument_count, char *argv[])
 
                 // 出力 THP ファイル名取得
                 outFile = argv[i];
-                THPUtyConvertToUnixFmt(outFile);
             }
 
             //
@@ -614,7 +611,6 @@ static s32 checkArguments(u32 argument_count, char *argv[])
                     return FALSE;
                 }
                 waveFilesPtr = &argv[i];
-                THPUtyConvertToUnixFmt(waveFilesPtr[0]);
                 
                 change_onetrack = 1;
             }
@@ -802,8 +798,6 @@ static s32 convertJPEGtoTHP(void)
     if (num_JPGfiles == 1)
     {
         // 1 個 JPEG ファイルもしくはワイルドカード指定の場合
-        
-        THPUtyConvertToUnixFmt(jpegFilesPtr[0]);
 
         // JPEG ファイル数を確認
         num_JPGfiles = getFileNameList(jpegFilesPtr[0], NULL);
@@ -846,7 +840,6 @@ static s32 convertJPEGtoTHP(void)
 
             // JPEG ファイル名保存
             strcpy(jpegFileList[cnt].name, jpegFilesPtr[cnt]);
-            THPUtyConvertToUnixFmt(jpegFileList[cnt].name);
             
             // 拡張子の確認
             nameLen = strlen(jpegFileList[cnt].name);
@@ -922,8 +915,6 @@ static s32 convertJPEGtoTHP(void)
         // WAV ファイルリスト作成
         for (cnt = 0; cnt < num_WAVfiles; cnt++)
         {
-            THPUtyConvertToUnixFmt(waveFilesPtr[cnt]);
-            
             audioHandle[cnt] = THPAudioCreateHandle(waveFilesPtr[cnt], frame_rate);
             if (audioHandle[cnt] == NULL)
             {
@@ -1135,8 +1126,6 @@ static s32 changeAudioTrack(THPFileHeader* fileHeader)
     {
         audioHandle[cnt] = NULL;
     }
-    
-    THPUtyConvertToUnixFmt(waveFilesPtr[0]);
     
     audioHandle[trackNo] = THPAudioCreateHandle(waveFilesPtr[0],
                                                 fileHeader->header.frameRate);
@@ -1398,8 +1387,6 @@ static s32 appendAudioData(THPFileHeader* fileHeader)
     // WAV ファイルリスト作成
     for (cnt = 0; cnt < num_WAVfiles; cnt++)
     {
-        THPUtyConvertToUnixFmt(waveFilesPtr[cnt]);
-        
         audioHandle[cnt] = THPAudioCreateHandle(waveFilesPtr[cnt],
                                                 fileHeader->header.frameRate);
         if (audioHandle[cnt] == NULL)
