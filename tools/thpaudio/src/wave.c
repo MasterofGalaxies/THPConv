@@ -38,7 +38,6 @@
   
  *---------------------------------------------------------------------------*/
 
-#include <windows.h>
 #include <stdio.h>
 
 #include <revolution/types.h>
