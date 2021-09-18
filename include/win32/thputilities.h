@@ -74,8 +74,6 @@ typedef struct
 // Utility Functions
 //--------------------------------------
 
-void THPUtyConvertToUnixFmt( char* fmt );
-    
 f32  THPUtyReverseEndianF32( f32   data );
     
 s32  THPUtyWritePad32      ( FILE* op, u32 bytes );
