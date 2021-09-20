@@ -34,46 +34,6 @@
 #define SSE_FLAG        0x02000000
 
 
-static int check_SSE(void)
-{
-        int     flag = 0;
-
-        _asm {
-
-                // EFLAGSのIDビットを変更できるか試してCPUID命令が使えるか調べる
-                // i486以降であればつかえるが、i386は使えない。
-                pushfd;
-                pop                     eax;                            // eax = EFLAGS;
-                xor                     eax, 00200000h;
-                push            eax;
-                popfd;
-                pushfd;
-                pop                     ebx;
-                cmp                     eax, ebx;
-                jne                     CHECK_END;                      // Not support CPUID
-
-                // cpuidでeaxに指定できる最大値の取得
-                mov                     eax, 0;
-                cpuid;
-                cmp                     eax, 1;                         // CPUIDにeax = 1が指定できるかどうかチェック
-                jl                      CHECK_END;
-
-                // Family/Model/Stepping/Featureの取得
-                mov                     eax, 1;
-                cpuid;
-                // MMX/SSEのチェック
-                test            edx, MMX_FLAG;          // Check MMX
-                jz                      CHECK_END;
-                test            edx, SSE_FLAG;          // Check SSE
-                jz                      CHECK_END;
-                mov                     flag, 1;
-                
-CHECK_END:              
-        }
-        return flag;
-}
-
-
 void
 encodeLoop
 (
@@ -93,22 +53,9 @@ encodeLoop
     s16 *input;
 //    s16 *dest;
 //    u32 count;
-        u16 (*adpcmEncodeFrameFuncPtr)(s16*, u8*, s16*, u8);
-        
 
     s16 *coeftable = (s16*)cxt;
         s16     coef[16];
-
-        if(check_SSE()){
-                adpcmEncodeFrameFuncPtr = adpcmEncodeFrame_SSE;
-                for(i = 0; i < NUM_OF_COEFTABLE; i++){
-                        coef[i * 2 + 0] = coeftable[i * 2 + 1];
-                        coef[i * 2 + 1] = coeftable[i * 2 + 0];
-                }
-                coeftable = coef;
-        } else {
-                adpcmEncodeFrameFuncPtr = adpcmEncodeFrame;
-        }
 
     adpcmbuffer     = (u8*)        malloc(ADPCM_BUFFER_SIZE + BYTES_PER_FRAME);
     pcmbuffer       = (s16*)       malloc((PCM_BUFFER_SIZE+ORDER*MAX_CHANNELS)*sizeof(s16));
@@ -172,7 +119,7 @@ encodeLoop
         // Encoding Loop
         while ( inoffset < insize )
         {
-            ps = adpcmEncodeFrameFuncPtr(
+            ps = adpcmEncodeFrame(
                         pcmbuffer + inoffset,
                         adpcmbuffer + outoffset,
                         coeftable,

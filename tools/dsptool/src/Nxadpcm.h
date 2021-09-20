@@ -74,11 +74,6 @@ u16  adpcmEncodeFrame(s16 *inbuffer,
                       s16 *coeftable,
                       u8  step);
 
-u16  adpcmEncodeFrame_SSE(s16 *inbuffer,
-                      u8  *outbuffer,
-                      s16 *coeftable,
-                      u8  step);
-
 /* Nxdecodeframe.c */
 void adpcmDecodeFrame(u8  *aramaddr,
                       s16 *outbuffer,
