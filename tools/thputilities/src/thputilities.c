@@ -154,16 +154,7 @@ void THPUtyConvertToUnixFmt(char* fmt)
  *---------------------------------------------------------------------------*/
 u16 THPUtyReverseEndianU16(u16 data)
 {
-#if 1
-    __asm {
-        mov     ax,     data;
-        rol     ax,     8;
-        mov     data,   ax;
-    }
-    return data;
-#else
     return (u16)(((data & 0x00FF) << 8) | ((data & 0xFF00) >> 8));
-#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -177,20 +168,10 @@ u16 THPUtyReverseEndianU16(u16 data)
  *---------------------------------------------------------------------------*/
 u32 THPUtyReverseEndianU32(u32 data)
 {
-#if 1
-    __asm {
-        mov     eax,    data;
-        bswap   eax;
-        mov     data,   eax;
-    }
-    return data;
-    
-#else
     return(((data >> 24) & 0x000000ff) |
            ((data >> 8)  & 0x0000ff00) |
            ((data << 8)  & 0x00ff0000) |
            ((data << 24) & 0xff000000) );
-#endif
 } 
 
 /*---------------------------------------------------------------------------*
